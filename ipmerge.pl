@@ -1,30 +1,33 @@
 #!/usr/bin/perl -Tw
 #-----------------------------------------------------------------------
-# Name: compact.pl
+# Name: ipmerge.pl
 # Created: 2014-04-16
-# Author: Royce Williams
-# Purpose: combine a list of subnets into the largest possible contiguous blocks.
-# $Id: ipmerge.pl,v 1.1 2014/05/02 17:43:32 royce Exp royce $
+# Authors: Royce Williams, Leif Sawyer
+# Purpose: combine subnets into largest possible contiguous blocks.
 #-----------------------------------------------------------------------
 
 use strict;
 use warnings;
 
-use NetAddr::IP;
+use NetAddr::IP qw(Compact);
 
 #-----------------------------------------------------------------------
 
 my @addresses;
-my @addresses_raw = (<STDIN>);
+my @addresses_raw;
 
-# Rough filter for non-IP records.
-my @addresses_raw2 = grep /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/, @addresses_raw;
+# Rough filter for non-IPv4 records.
+while (<STDIN>) {
+    if (m/^((?:\d{1,3}\.){3}\d{1,3}(?:\/\d{1,2})?)(.*)$/) {
+        push @addresses_raw, $1;
+    }
+}
 
 # Create network objects for each record.
-push @addresses, NetAddr::IP->new($_) for @addresses_raw2;
+push @addresses, NetAddr::IP->new($_) for @addresses_raw;
 
 # Print output.
-print join("\n", NetAddr::IP::compact(@addresses)), "\n";
+print join("\n", Compact(@addresses)), "\n";
 
 #-----------------------------------------------------------------------
 
