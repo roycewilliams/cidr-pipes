@@ -7,3 +7,6 @@ A grab bag of pipe-friendly command line utilities for managing lists of IPs and
 
 * https://github.com/akhepcat/ipset-blacklist
 
+## See also
+
+* https://github.com/frohoff/grepcidr
